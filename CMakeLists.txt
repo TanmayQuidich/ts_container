@@ -14,7 +14,6 @@ else()
 endif()
 
 # ---------------- Configurable root ----------------
-# For manual fallback linking (no pkg-config)
 set(GSTREAMER_ROOT "C:/gstreamer/1.0/msvc_x86_64" CACHE PATH "GStreamer MSVC root")
 
 # ---------------- Try pkg-config first ------------
@@ -23,7 +22,6 @@ find_package(PkgConfig QUIET)
 
 set(HAVE_GST_PKG OFF)
 if(PkgConfig_FOUND)
-  # Point pkg-config at the MSVC SDK's .pc files if needed
   if(NOT DEFINED ENV{PKG_CONFIG_PATH})
     set(ENV{PKG_CONFIG_PATH} "${GSTREAMER_ROOT}/lib/pkgconfig")
   endif()
@@ -42,11 +40,8 @@ endif()
 add_executable(appsrc_feeder main.cpp)
 
 if(HAVE_GST_PKG)
-  # ---------- pkg-config path (preferred) ----------
   target_link_libraries(appsrc_feeder PRIVATE PkgConfig::GST)
 else()
-  # ---------- manual path fallback ----------
-  # Basic sanity check
   if(NOT EXISTS "${GSTREAMER_ROOT}/include" OR NOT EXISTS "${GSTREAMER_ROOT}/lib")
     message(FATAL_ERROR "GSTREAMER_ROOT does not look valid: ${GSTREAMER_ROOT}")
   endif()
@@ -62,19 +57,22 @@ else()
     "${GSTREAMER_ROOT}/lib"
   )
 
-  # MSVC import libs are *.lib in the MSVC SDK
   target_link_libraries(appsrc_feeder PRIVATE
     gstreamer-1.0
     gstapp-1.0
     gstbase-1.0
     gobject-2.0
     glib-2.0
-    # If you hit unresolved externals, uncomment Win32 libs below:
-    # ws2_32 winmm shlwapi ole32 uuid
   )
 endif()
 
-# Helpful note after build
+set(HIREDIS_ROOT "C:/hiredis/install")
+if(EXISTS "${HIREDIS_ROOT}/include/hiredis/hiredis.h")
+  target_include_directories(appsrc_feeder PRIVATE "${HIREDIS_ROOT}/include")
+  target_link_directories(appsrc_feeder PRIVATE "${HIREDIS_ROOT}/lib")
+  target_link_libraries(appsrc_feeder PRIVATE hiredis)
+endif()
+
 add_custom_command(TARGET appsrc_feeder POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E echo "Add ${GSTREAMER_ROOT}/bin to PATH before running."
 )
