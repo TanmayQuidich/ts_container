@@ -1,0 +1,3 @@
+D:/Tanmay/ts_container/build/CMakeFiles/audio-lockstep.dir
+D:/Tanmay/ts_container/build/CMakeFiles/ALL_BUILD.dir
+D:/Tanmay/ts_container/build/CMakeFiles/ZERO_CHECK.dir

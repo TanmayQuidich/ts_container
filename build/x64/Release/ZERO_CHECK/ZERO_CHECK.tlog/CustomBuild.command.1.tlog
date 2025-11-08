@@ -1,0 +1,10 @@
+^D:\TANMAY\TS_CONTAINER\BUILD\CMAKEFILES\1A2DFA019D3CC29CFF2212B530F9A896\GENERATE.STAMP.RULE
+setlocal
+C:\msys64\mingw64\bin\cmake.exe -SD:/Tanmay/ts_container -BD:/Tanmay/ts_container/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Tanmay/ts_container/build/audio-lockstep.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
